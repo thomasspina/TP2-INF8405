@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">BT Detector</string>
+
+    <!-- Splash screen -->
+    <string name="splash_developers">Développé par\nÉquipe TP2</string>
+    <string name="splash_version">Version 1.0</string>
+
+    <!-- Main activity -->
+    <string name="btn_swap_theme">Swap Theme</string>
+    <string name="btn_scan">Rechercher</string>
+    <string name="scanning">Recherche en cours…</string>
+    <string name="scan_complete">Recherche terminée</string>
+    <string name="label_no_devices">Aucun appareil détecté</string>
+    <string name="current_position">Position actuelle</string>
+
+    <!-- Device detail -->
+    <string name="label_device_name">Nom</string>
+    <string name="label_mac_address">Adresse MAC</string>
+    <string name="label_device_class">Classe</string>
+    <string name="label_bond_state">État de liaison</string>
+    <string name="label_rssi">RSSI</string>
+    <string name="label_device_type">Type</string>
+    <string name="label_uuids">UUIDs</string>
+    <string name="label_location">Position de détection</string>
+    <string name="label_detected_at">Détecté le</string>
+
+    <!-- Bond state values -->
+    <string name="bond_none">Non appairé</string>
+    <string name="bond_bonding">Appairage en cours</string>
+    <string name="bond_bonded">Appairé</string>
+
+    <!-- Device type values -->
+    <string name="type_classic">Classique</string>
+    <string name="type_le">Basse énergie</string>
+    <string name="type_dual">Double</string>
+    <string name="type_unknown">Inconnu</string>
+
+    <!-- Action buttons -->
+    <string name="btn_get_directions">Comment y arriver</string>
+    <string name="btn_add_favourite">Ajouter aux favoris</string>
+    <string name="btn_remove_favourite">Retirer des favoris</string>
+    <string name="btn_share">Partager</string>
+
+    <!-- Dialogs and messages -->
+    <string name="gps_disabled_message">Le GPS doit être activé pour cette fonctionnalité</string>
+    <string name="permission_required_title">Permissions requises</string>
+    <string name="permission_required_message">Cette application nécessite les permissions Bluetooth et de localisation pour fonctionner.</string>
+    <string name="btn_retry">Réessayer</string>
+    <string name="btn_settings">Paramètres</string>
+    <string name="btn_cancel">Annuler</string>
+    <string name="bluetooth_disabled_message">Le Bluetooth doit être activé pour rechercher des appareils.</string>
+    <string name="bluetooth_required">Veuillez activer le Bluetooth pour rechercher des appareils.</string>
+    <string name="share_device_info_title">Partager les informations de l\'appareil</string>
+    <string name="not_available">Non disponible</string>
+</resources>

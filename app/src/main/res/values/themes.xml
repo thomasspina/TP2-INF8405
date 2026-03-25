@@ -1,0 +1,12 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.TP2" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primaryLight</item>
+        <item name="colorOnPrimary">@color/onPrimaryLight</item>
+        <item name="colorPrimaryContainer">@color/primaryContainerLight</item>
+        <item name="colorSecondary">@color/secondaryLight</item>
+        <item name="colorSurface">@color/surfaceLight</item>
+        <item name="colorOnSurface">@color/onSurfaceLight</item>
+    </style>
+
+    <style name="Theme.TP2" parent="Base.Theme.TP2" />
+</resources>

@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.TP2" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primaryDark</item>
+        <item name="colorOnPrimary">@color/onPrimaryDark</item>
+        <item name="colorPrimaryContainer">@color/primaryContainerDark</item>
+        <item name="colorSecondary">@color/secondaryDark</item>
+        <item name="colorSurface">@color/surfaceDark</item>
+        <item name="colorOnSurface">@color/onSurfaceDark</item>
+    </style>
+</resources>

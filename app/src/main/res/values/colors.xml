@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light theme colors -->
+    <color name="primaryLight">#1565C0</color>
+    <color name="onPrimaryLight">#FFFFFF</color>
+    <color name="primaryContainerLight">#D1E4FF</color>
+    <color name="secondaryLight">#00897B</color>
+    <color name="surfaceLight">#FAFAFA</color>
+    <color name="onSurfaceLight">#1C1B1F</color>
+
+    <!-- Dark theme colors -->
+    <color name="primaryDark">#90CAF9</color>
+    <color name="onPrimaryDark">#003258</color>
+    <color name="primaryContainerDark">#00497D</color>
+    <color name="secondaryDark">#4DB6AC</color>
+    <color name="surfaceDark">#1C1B1F</color>
+    <color name="onSurfaceDark">#E6E1E5</color>
+
+    <!-- Common -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources>
