@@ -24,6 +24,7 @@ public class DeviceDetailActivity extends AppCompatActivity {
 
     private BluetoothDeviceModel device;
     private DeviceRepository deviceRepository;
+    private MaterialButton btnDirections;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,12 @@ public class DeviceDetailActivity extends AppCompatActivity {
 
         populateDeviceInfo();
         setupActionButtons();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateGpsActionState();
     }
 
     private void populateDeviceInfo() {
@@ -82,16 +89,15 @@ public class DeviceDetailActivity extends AppCompatActivity {
     }
 
     private void setupActionButtons() {
-        MaterialButton btnDirections = findViewById(R.id.btnDirections);
+        btnDirections = findViewById(R.id.btnDirections);
         MaterialButton btnFavourite = findViewById(R.id.btnFavourite);
         MaterialButton btnShare = findViewById(R.id.btnShare);
 
-        boolean gpsEnabled = LocationHelper.isGpsEnabled(this);
-        btnDirections.setEnabled(gpsEnabled);
-        btnDirections.setAlpha(gpsEnabled ? 1.0f : 0.5f);
+        updateGpsActionState();
         btnDirections.setOnClickListener(v -> {
             if (!LocationHelper.isGpsEnabled(this)) {
                 Toast.makeText(this, R.string.gps_disabled_message, Toast.LENGTH_SHORT).show();
+                updateGpsActionState();
                 return;
             }
             Uri gmmUri = Uri.parse("google.navigation:q=" +
@@ -111,6 +117,13 @@ public class DeviceDetailActivity extends AppCompatActivity {
         });
 
         btnShare.setOnClickListener(v -> shareDeviceInfo());
+    }
+
+    private void updateGpsActionState() {
+        if (btnDirections == null) return;
+        boolean gpsEnabled = LocationHelper.isGpsEnabled(this);
+        btnDirections.setEnabled(gpsEnabled);
+        btnDirections.setAlpha(gpsEnabled ? 1.0f : 0.5f);
     }
 
     private void updateFavouriteButton(MaterialButton btn) {
