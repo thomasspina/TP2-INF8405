@@ -50,7 +50,7 @@ public class BluetoothDeviceModel implements Serializable {
         BluetoothClass btClass = device.getBluetoothClass();
         if (btClass != null) {
             model.deviceClass = btClass.getDeviceClass();
-            model.deviceClassDescription = getDeviceClassDescription(btClass.getMajorDeviceClass());
+            model.deviceClassDescription = getDeviceClassDescription(btClass);
         } else {
             model.deviceClass = 0;
             model.deviceClassDescription = "Inconnu";
@@ -69,10 +69,27 @@ public class BluetoothDeviceModel implements Serializable {
         return model;
     }
 
-    private static String getDeviceClassDescription(int majorClass) {
+    private static String getDeviceClassDescription(BluetoothClass btClass) {
+        int majorClass = btClass.getMajorDeviceClass();
+        int devicePart = btClass.getDeviceClass();
+
+        // Check specifically for audio devices/headphones
+        if (majorClass == BluetoothClass.Device.Major.AUDIO_VIDEO) {
+            switch (devicePart) {
+                case BluetoothClass.Device.AUDIO_VIDEO_WEARABLE_HEADSET:
+                    return "Casque Audio";
+                case BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE:
+                    return "Kit Mains-libres";
+                case BluetoothClass.Device.AUDIO_VIDEO_HEADPHONES:
+                    return "Écouteurs";
+                case BluetoothClass.Device.AUDIO_VIDEO_LOUDSPEAKER:
+                    return "Haut-parleur";
+                default:
+                    return "Audio/Vidéo";
+            }
+        }
+
         switch (majorClass) {
-            case BluetoothClass.Device.Major.AUDIO_VIDEO:
-                return "Audio/Vidéo";
             case BluetoothClass.Device.Major.COMPUTER:
                 return "Ordinateur";
             case BluetoothClass.Device.Major.HEALTH:

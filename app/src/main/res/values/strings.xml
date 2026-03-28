@@ -2,7 +2,7 @@
     <string name="app_name">BT Detector</string>
 
     <!-- Splash screen -->
-    <string name="splash_developers">Développé par\nÉquipe TP2</string>
+    <string name="splash_developers">Développé par :\nZineb Benzeroual (2071348)\nAbdelnour Sikouky (2158244)\nThomas Spina (2085265)\nLawali Mahamane Yacine (2113345)</string>
     <string name="splash_version">Version 1.0</string>
 
     <!-- Main activity -->

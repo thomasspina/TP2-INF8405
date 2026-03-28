@@ -19,8 +19,18 @@ public class DeviceRepository {
         executor = Executors.newSingleThreadExecutor();
     }
 
+    /**
+     * Insère ou met à jour un appareil en préservant son état "favori" s'il existe déjà.
+     */
     public void insertDevice(BluetoothDeviceModel device) {
-        executor.execute(() -> deviceDao.insertDevice(device));
+        executor.execute(() -> {
+            BluetoothDeviceModel existing = deviceDao.getDeviceByMac(device.getMacAddress());
+            if (existing != null) {
+                // On préserve l'état favori de la base de données
+                device.setFavourite(existing.isFavourite());
+            }
+            deviceDao.insertDevice(device);
+        });
     }
 
     public void getAllDevices(Consumer<List<BluetoothDeviceModel>> callback) {

@@ -25,6 +25,7 @@ public class DeviceDetailActivity extends AppCompatActivity {
     private BluetoothDeviceModel device;
     private DeviceRepository deviceRepository;
     private MaterialButton btnDirections;
+    private MaterialButton btnFavourite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +40,23 @@ public class DeviceDetailActivity extends AppCompatActivity {
             return;
         }
 
+        // Initialize UI with initial data
         populateDeviceInfo();
         setupActionButtons();
+
+        // Refresh data from database to get the latest favourite status
+        refreshDeviceData();
+    }
+
+    private void refreshDeviceData() {
+        deviceRepository.getDeviceByMac(device.getMacAddress(), updatedDevice -> {
+            if (updatedDevice != null) {
+                runOnUiThread(() -> {
+                    device = updatedDevice;
+                    updateFavouriteButton(btnFavourite);
+                });
+            }
+        });
     }
 
     @Override
@@ -90,7 +106,7 @@ public class DeviceDetailActivity extends AppCompatActivity {
 
     private void setupActionButtons() {
         btnDirections = findViewById(R.id.btnDirections);
-        MaterialButton btnFavourite = findViewById(R.id.btnFavourite);
+        btnFavourite = findViewById(R.id.btnFavourite);
         MaterialButton btnShare = findViewById(R.id.btnShare);
 
         updateGpsActionState();
@@ -100,20 +116,27 @@ public class DeviceDetailActivity extends AppCompatActivity {
                 updateGpsActionState();
                 return;
             }
-            Uri gmmUri = Uri.parse("google.navigation:q=" +
-                    device.getLatitude() + "," + device.getLongitude());
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmUri);
-            mapIntent.setPackage("com.google.android.apps.maps");
-            if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            
+            String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%f,%f(%s)", 
+                device.getLatitude(), device.getLongitude(), 
+                device.getLatitude(), device.getLongitude(), 
+                Uri.encode(device.getDisplayName()));
+            
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            try {
                 startActivity(mapIntent);
+            } catch (Exception e) {
+                Toast.makeText(this, "Aucune application de carte trouvée", Toast.LENGTH_SHORT).show();
             }
         });
 
         updateFavouriteButton(btnFavourite);
         btnFavourite.setOnClickListener(v -> {
-            device.setFavourite(!device.isFavourite());
-            deviceRepository.setFavourite(device.getMacAddress(), device.isFavourite());
+            boolean newState = !device.isFavourite();
+            device.setFavourite(newState);
+            deviceRepository.setFavourite(device.getMacAddress(), newState);
             updateFavouriteButton(btnFavourite);
+            Toast.makeText(this, newState ? "Ajouté aux favoris" : "Retiré des favoris", Toast.LENGTH_SHORT).show();
         });
 
         btnShare.setOnClickListener(v -> shareDeviceInfo());
@@ -127,6 +150,7 @@ public class DeviceDetailActivity extends AppCompatActivity {
     }
 
     private void updateFavouriteButton(MaterialButton btn) {
+        if (btn == null) return;
         if (device.isFavourite()) {
             btn.setText(R.string.btn_remove_favourite);
         } else {

@@ -8,8 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.util.Log;
 
 public class BluetoothScanner {
+
+    private static final String TAG = "BluetoothScanner";
 
     public interface OnDeviceFoundListener {
         void onDeviceFound(BluetoothDevice device, short rssi);
@@ -28,13 +31,30 @@ public class BluetoothScanner {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            Log.d(TAG, "onReceive: " + action);
+
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 short rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, Short.MIN_VALUE);
-                if (device != null && deviceFoundListener != null) {
-                    deviceFoundListener.onDeviceFound(device, rssi);
+                
+                if (device != null) {
+                    // Log details for debugging
+                    String name = device.getName();
+                    if (name == null) {
+                        // Try to get name from intent
+                        name = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
+                    }
+                    
+                    Log.d(TAG, "Appareil détecté: " + device.getAddress() + " | Nom: " + (name != null ? name : "Inconnu"));
+                    
+                    if (deviceFoundListener != null) {
+                        deviceFoundListener.onDeviceFound(device, rssi);
+                    }
                 }
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                Log.d(TAG, "Scan Bluetooth démarré");
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                Log.d(TAG, "Scan Bluetooth terminé");
                 if (discoveryFinishedListener != null) {
                     discoveryFinishedListener.onDiscoveryFinished();
                 }
@@ -56,8 +76,11 @@ public class BluetoothScanner {
     }
 
     @SuppressWarnings("MissingPermission")
-    public void startDiscovery(Context context) {
-        if (bluetoothAdapter == null) return;
+    public boolean startDiscovery(Context context) {
+        if (bluetoothAdapter == null) {
+            Log.e(TAG, "BluetoothAdapter est null");
+            return false;
+        }
 
         if (bluetoothAdapter.isDiscovering()) {
             bluetoothAdapter.cancelDiscovery();
@@ -66,17 +89,20 @@ public class BluetoothScanner {
         if (!isReceiverRegistered) {
             IntentFilter filter = new IntentFilter();
             filter.addAction(BluetoothDevice.ACTION_FOUND);
+            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
             filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                context.registerReceiver(discoveryReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+                context.registerReceiver(discoveryReceiver, filter, Context.RECEIVER_EXPORTED);
             } else {
                 context.registerReceiver(discoveryReceiver, filter);
             }
             isReceiverRegistered = true;
         }
 
-        bluetoothAdapter.startDiscovery();
+        boolean success = bluetoothAdapter.startDiscovery();
+        Log.d(TAG, "Démarrage du scan: " + (success ? "SUCCÈS" : "ÉCHEC"));
+        return success;
     }
 
     @SuppressWarnings("MissingPermission")
@@ -87,18 +113,12 @@ public class BluetoothScanner {
         if (isReceiverRegistered) {
             try {
                 context.unregisterReceiver(discoveryReceiver);
-            } catch (IllegalArgumentException ignored) {
-                // Receiver was already unregistered
-            }
+            } catch (IllegalArgumentException ignored) {}
             isReceiverRegistered = false;
         }
     }
 
     public boolean isBluetoothEnabled() {
         return bluetoothAdapter != null && bluetoothAdapter.isEnabled();
-    }
-
-    public BluetoothAdapter getAdapter() {
-        return bluetoothAdapter;
     }
 }
